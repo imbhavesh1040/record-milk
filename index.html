@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Tracker AI - Premium</title>
+    
+    <!-- PWA Configuration -->
+    <meta name="theme-color" content="#667eea">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        /* Loading Screen Styles */
+        #aiLoader {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, #0a0a0f, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: aiGradient 4s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        @keyframes aiGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .neural-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(99, 102, 241, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(236, 72, 153, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(16, 185, 129, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(245, 158, 11, 0.3), transparent);
+            background-size: 200px 100px;
+            animation: neuralMove 8s linear infinite;
+        }
+
+        @keyframes neuralMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-200px, -100px); }
+        }
+
+        .ai-brain {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+            position: relative;
+            animation: brainPulse 2s ease-in-out infinite;
+        }
+
+        .brain-core {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 
+                0 0 30px rgba(99, 102, 241, 0.6),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .brain-waves {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: waveExpand 2s ease-out infinite;
+        }
+
+        .brain-waves:nth-child(2) { animation-delay: 0.5s; }
+        .brain-waves:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes brainPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes waveExpand {
+            0% { width: 100%; height: 100%; opacity: 1; }
+            100% { width: 200%; height: 200%; opacity: 0; }
+        }
+
+        .ai-processing {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .process-bar {
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(to top, #667eea, #00f2fe);
+            border-radius: 2px;
+            animation: aiProcess 1.4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        .process-bar:nth-child(1) { animation-delay: 0s; }
+        .process-bar:nth-child(2) { animation-delay: 0.1s; }
+        .process-bar:nth-child(3) { animation-delay: 0.2s; }
+        .process-bar:nth-child(4) { animation-delay: 0.3s; }
+        .process-bar:nth-child(5) { animation-delay: 0.4s; }
+        .process-bar:nth-child(6) { animation-delay: 0.5s; }
+        .process-bar:nth-child(7) { animation-delay: 0.4s; }
+        .process-bar:nth-child(8) { animation-delay: 0.3s; }
+
+        @keyframes aiProcess {
+            0%, 40%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+            20% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .ai-title {
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.8);
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #ffffff, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ai-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .designer-credit {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+            position: relative;
+        }
+
+        .designer-credit::before,
+        .designer-credit::after {
+            content: '✨';
+            position: absolute;
+            top: 0;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .designer-credit::before {
+            left: -25px;
+            animation-delay: 0s;
+        }
+
+        .designer-credit::after {
+            right: -25px;
+            animation-delay: 1s;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 2px;
+            animation: loadProgress 2s ease-out forwards;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.8);
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .loading-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        .ai-fade-out {
+            animation: aiFadeOut 1s ease-out forwards;
+        }
+
+        @keyframes aiFadeOut {
+            to { 
+                opacity: 0; 
+                visibility: hidden; 
+                transform: scale(0.9);
+            }
+        }
+
+        /* Main App Styles */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111827;
+            --bg-card: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border: #374151;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            padding: 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0f172a, #1e293b, #374151);
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            backdrop-filter: blur(30px);
+            border-radius: 28px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            position: relative;
+            display: none;
+        }
+
+        [data-theme="dark"] .container {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9);
+        }
+
+        .container.show {
+            display: block;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] .container::before {
+            opacity: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-bottom: 2px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 50%);
+            animation: headerGlow 20s linear infinite;
+        }
+
+        @keyframes headerGlow {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.95;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            z-index: 3;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.15) rotate(10deg);
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        [data-theme="dark"] .nav-tabs {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 14px 8px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-tab.active {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-tab.active::before {
+            opacity: 1;
+        }
+
+        .nav-tab span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .card {
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 800;
+            font-size: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] .form-input {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .vendor-management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .vendor-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .vendor-name-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .vendor-name-item {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(15px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .vendor-name-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .vendor-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .vendor-section {
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .vendor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .vendor-name {
+            font-weight: 900;
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .vendor-total {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #0891b2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            font-size: 16px;
+            margin-top: 15px;
+            font-weight: 800;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            animation: slideInDown 0.5s ease;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-primary);
+            border-radius: 24px;
+            padding: 35px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .filter-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        [data-theme="dark"] .filter-table {
+            background: rgba(31, 41, 55, 0.9);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px 10px;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .filter-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 13px;
+            background: var(--bg-card);
+        }
+
+        [data-theme="dark"] .filter-table td {
+            color: var(--text-primary);
+            background: rgba(31, 41, 55, 0.7);
+            border-bottom-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .filter-table tr:hover td {
+            background: var(--bg-secondary);
+        }
+
+        [data-theme="dark"] .filter-table tr:hover td {
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        .filter-summary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .filter-title {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            margin: 30px -30px 0 -30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .summary {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-top: 2px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .summary::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: summaryGlow 25s linear infinite;
+        }
+
+        @keyframes summaryGlow {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(360deg) scale(1.1); }
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-amount {
+            font-size: 24px;
+            font-weight: 900;
+            margin: 8px 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .monthly-breakdown {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .breakdown-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        [data-theme="dark"] .footer {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .footer-text {
+            color: var(--text-primary);
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .footer-subtitle {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        /* MOBILE FULL SCREEN OPTIMIZATION */
+        @media (max-width: 480px) {
+            html, body {
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow-x: hidden !important;
+            }
+
+            body {
+                padding: 0 !important;
+            }
+
+            .container {
+                width: 100vw !important;
+                height: 100vh !important;
+                max-width: 100vw !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                overflow-y: auto !important;
+            }
+
+            .content {
+                padding: 20px !important;
+            }
+
+            .header {
+                padding: 25px 20px !important;
+            }
+
+            .header h1 {
+                font-size: 28px !important;
+            }
+
+            .theme-toggle {
+                top: 20px !important;
+                right: 20px !important;
+            }
+
+            .form-row, .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .nav-tab {
+                font-size: 11px;
+                padding: 12px 6px;
+            }
+
+            .vendor-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .ai-title {
+                font-size: 28px !important;
+            }
+
+            .loading-progress {
+                width: 250px !important;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Loading Screen -->
+    <div id="aiLoader">
+        <div class="neural-bg"></div>
+        
+        <div class="ai-brain">
+            <div class="brain-core"></div>
+            <div class="brain-waves"></div>
+            <div class="brain-waves"></div>
+            <div class="brain-waves"></div>
+        </div>
+        
+        <div class="ai-processing">
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+            <div class="process-bar"></div>
+        </div>
+        
+        <div class="ai-title">🤖 AI MILK TRACKER</div>
+        <div class="ai-subtitle">NEURAL PROCESSING</div>
+        <div class="designer-credit">DESIGNED BY BHAVESH VERMA</div>
+        
+        <div class="loading-progress">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div class="loading-text">INITIALIZING AI MODEL...</div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="container" id="mainApp">
+        <div class="header">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <h1>🥛 Milk Tracker AI</h1>
+            <p>Created by Bhavesh Verma</p>
+        </div>
+
+        <div class="content">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="switchTab('entry')"><span>Daily Entry</span></div>
+                <div class="nav-tab" onclick="switchTab('records')"><span>View Records</span></div>
+                <div class="nav-tab" onclick="switchTab('filter')"><span>Filters</span></div>
+                <div class="nav-tab" onclick="switchTab('monthly')"><span>Monthly</span></div>
+            </div>
+
+            <!-- Daily Entry Tab -->
+            <div class="tab-content active" id="entry-tab">
+                <!-- Vendor Management -->
+                <div class="card">
+                    <div class="vendor-management-header">
+                        <h3>👥 Vendor Management</h3>
+                        <div class="vendor-buttons">
+                            <button class="btn btn-info btn-small" onclick="openVendorModal('edit')" id="editVendorBtn" style="display: none;">✏️ Edit Vendor</button>
+                            <button class="btn btn-primary btn-small" onclick="openVendorModal('add')">➕ Add Vendor</button>
+                        </div>
+                    </div>
+                    <div id="vendorNamesContainer"></div>
+                </div>
+
+                <!-- Rate Settings -->
+                <div class="card" id="rateSettingsCard">
+                    <h3>💰 Rate Settings (Per KG)</h3>
+                    <div id="rateSettingsContainer"></div>
+                </div>
+
+                <!-- Dynamic Vendor Sections -->
+                <div id="vendorSectionsContainer"></div>
+
+                <!-- Action Buttons -->
+                <div class="action-grid">
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All</button>
+                    <button class="btn btn-danger" onclick="clearMonthData()">📅 Clear Month</button>
+                </div>
+            </div>
+
+            <!-- View Records Tab -->
+            <div class="tab-content" id="records-tab">
+                <div id="recordsContainer"></div>
+                <div class="action-grid" id="pdfOptionsContainer"></div>
+                <button class="btn btn-success" onclick="generateMonthlyReport()" style="width: 100%; margin-top: 15px;">📄 Combined PDF</button>
+            </div>
+
+            <!-- Filter Tab -->
+            <div class="tab-content" id="filter-tab">
+                <div id="vendorFiltersContainer"></div>
+                <div class="card">
+                    <h3>📅 Combined Date Range Filter</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-input" id="combinedFilterFromDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-input" id="combinedFilterToDate">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="applyCombinedDateFilter()" style="width: 100%; margin-top: 15px;">📊 Apply Combined Filter</button>
+                    <button class="btn btn-warning" onclick="clearFilter()" style="width: 100%; margin-top: 10px;">🔄 Clear Filter</button>
+                </div>
+                <div class="card">
+                    <h3>🎯 Filter Results</h3>
+                    <div id="filterResults">
+                        <p class="no-results">Apply filters to see results</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Tab -->
+            <div class="tab-content" id="monthly-tab">
+                <div class="card">
+                    <h3>📊 Monthly Management</h3>
+                    <p class="no-results">Monthly features coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Monthly Total</div>
+                    <div class="summary-amount" id="monthlyTotal">₹0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Total KG</div>
+                    <div class="summary-amount" id="totalKg">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Total Records</div>
+                    <div class="summary-amount" id="totalRecords">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Average Rate</div>
+                    <div class="summary-amount" id="avgRate">₹0</div>
+                </div>
+            </div>
+            
+            <div class="monthly-breakdown" id="monthlyBreakdown">
+                <div class="breakdown-title">Monthly Vendor Breakdown</div>
+                <div id="vendorBreakdownContainer"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">💎 Designed by Bhavesh Verma 💎</div>
+            <div class="footer-subtitle">Premium AI Milk Tracking Solution</div>
+        </div>
+    </div>
+
+    <!-- Vendor Modal -->
+    <div class="modal" id="vendorModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeVendorModal()">&times;</button>
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Vendor</h3>
+                <p class="modal-subtitle" id="modalSubtitle">Enter vendor details below</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Vendor Name</label>
+                <input type="text" class="form-input" id="modalVendorName" placeholder="Enter vendor name">
+            </div>
+            <div class="form-group" id="vendorSelectGroup" style="display: none;">
+                <label class="form-label">Select Vendor to Edit</label>
+                <select class="form-input" id="modalVendorSelect"></select>
+            </div>
+            <div class="action-grid" style="margin-top: 25px;">
+                <button class="btn btn-danger" onclick="closeVendorModal()">Cancel</button>
+                <button class="btn btn-success" onclick="saveVendorModal()" id="saveVendorBtn">Save Vendor</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Global variables
+        let milkData = JSON.parse(localStorage.getItem('milkTrackerAI')) || {
+            vendors: {
+                vendor1: { name: 'Vendor 1', records: [], rate: 60 }
+            },
+            nextVendorId: 2
+        };
+
+        let currentModalMode = 'add';
+        let currentEditVendorId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setTodayDate();
+            renderAll();
+            updateDisplay();
+        });
+
+        // Auto set today's date for all vendor date inputs
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('combinedFilterFromDate').value = today;
+            document.getElementById('combinedFilterToDate').value = today;
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const dateInput = document.getElementById(`${vendorId}Date`);
+                if (dateInput) {
+                    dateInput.value = today;
+                }
+            });
+        }
+
+        // Loading screen
+        window.addEventListener('load', function() {
+            const loadingText = document.querySelector('.loading-text');
+            const messages = [
+                'INITIALIZING AI MODEL...',
+                'LOADING NEURAL NETWORKS...',
+                'CALIBRATING ALGORITHMS...',
+                'SYSTEM READY!'
+            ];
+            
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+                if (messageIndex < messages.length - 1) {
+                    loadingText.textContent = messages[++messageIndex];
+                }
+            }, 500);
+            
+            setTimeout(function() {
+                clearInterval(messageInterval);
+                const loader = document.getElementById('aiLoader');
+                const mainApp = document.getElementById('mainApp');
+                
+                if (loader && mainApp) {
+                    loader.classList.add('ai-fade-out');
+                    setTimeout(() => {
+                        loader.remove();
+                        mainApp.classList.add('show');
+                    }, 1000);
+                }
+            }, 2500);
+        });
+
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = newTheme === 'light' ? '🌙' : '☀️';
+            
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Vendor modal functions
+        function openVendorModal(mode) {
+            currentModalMode = mode;
+            const modal = document.getElementById('vendorModal');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const nameInput = document.getElementById('modalVendorName');
+            const selectGroup = document.getElementById('vendorSelectGroup');
+            const select = document.getElementById('modalVendorSelect');
+            const saveBtn = document.getElementById('saveVendorBtn');
+            
+            if (mode === 'add') {
+                title.textContent = 'Add New Vendor';
+                subtitle.textContent = 'Enter vendor details below';
+                nameInput.value = '';
+                selectGroup.style.display = 'none';
+                saveBtn.textContent = '✅ Add Vendor';
+            } else {
+                title.textContent = 'Edit Vendor';
+                subtitle.textContent = 'Select vendor and update name';
+                selectGroup.style.display = 'block';
+                saveBtn.textContent = '✅ Update Vendor';
+                
+                select.innerHTML = '';
+                Object.keys(milkData.vendors).forEach(vendorId => {
+                    const option = document.createElement('option');
+                    option.value = vendorId;
+                    option.textContent = milkData.vendors[vendorId].name;
+                    select.appendChild(option);
+                });
+                
+                if (Object.keys(milkData.vendors).length > 0) {
+                    const firstVendorId = Object.keys(milkData.vendors)[0];
+                    nameInput.value = milkData.vendors[firstVendorId].name;
+                    currentEditVendorId = firstVendorId;
+                }
+                
+                select.addEventListener('change', function() {
+                    currentEditVendorId = this.value;
+                    nameInput.value = milkData.vendors[this.value].name;
+                });
+            }
+            
+            modal.style.display = 'block';
+            nameInput.focus();
+        }
+
+        function closeVendorModal() {
+            document.getElementById('vendorModal').style.display = 'none';
+            currentEditVendorId = null;
+        }
+
+        function saveVendorModal() {
+            const nameInput = document.getElementById('modalVendorName');
+            const vendorName = nameInput.value.trim();
+            
+            if (!vendorName) {
+                alert('Please enter vendor name');
+                return;
+            }
+            
+            if (currentModalMode === 'add') {
+                const vendorId = `vendor${milkData.nextVendorId}`;
+                milkData.vendors[vendorId] = {
+                    name: vendorName,
+                    records: [],
+                    rate: 60
+                };
+                milkData.nextVendorId++;
+            } else {
+                if (currentEditVendorId) {
+                    milkData.vendors[currentEditVendorId].name = vendorName;
+                }
+            }
+            
+            saveData();
+            renderAll();
+            updateDisplay();
+            closeVendorModal();
+        }
+
+        function editVendor(vendorId) {
+            currentEditVendorId = vendorId;
+            openVendorModal('edit');
+        }
+
+        function deleteVendor(vendorId) {
+            if (Object.keys(milkData.vendors).length <= 1) {
+                alert('At least 1 vendor is required');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this vendor and all records?')) {
+                delete milkData.vendors[vendorId];
+                saveData();
+                renderAll();
+                updateDisplay();
+            }
+        }
+
+        // Render functions
+        function renderAll() {
+            renderVendorManagement();
+            renderRateSettings();
+            renderVendorSections();
+            renderRecords();
+            renderVendorFilters();
+            setTodayDate();
+        }
+
+        function renderVendorManagement() {
+            const container = document.getElementById('vendorNamesContainer');
+            const editBtn = document.getElementById('editVendorBtn');
+            container.innerHTML = '';
+            
+            if (Object.keys(milkData.vendors).length > 0) {
+                editBtn.style.display = 'inline-flex';
+            } else {
+                editBtn.style.display = 'none';
+            }
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                const vendorDiv = document.createElement('div');
+                vendorDiv.className = 'vendor-name-item';
+                vendorDiv.innerHTML = `
+                    <input type="text" class="form-input" style="flex: 1;" value="${vendor.name}" readonly>
+                    <button class="btn btn-warning btn-small" onclick="editVendor('${vendorId}')">✏️</button>
+                    <button class="btn btn-danger btn-small" onclick="deleteVendor('${vendorId}')" 
+                            ${Object.keys(milkData.vendors).length <= 1 ? 'style="display:none;"' : ''}>🗑️</button>
+                `;
+                container.appendChild(vendorDiv);
+            });
+        }
+
+        function renderRateSettings() {
+            const container = document.getElementById('rateSettingsContainer');
+            container.innerHTML = '';
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                const rateDiv = document.createElement('div');
+                rateDiv.className = 'form-group';
+                rateDiv.innerHTML = `
+                    <label class="form-label">${vendor.name} Rate</label>
+                    <input type="number" class="form-input" value="${vendor.rate}" step="0.01"
+                           onchange="updateVendorRate('${vendorId}', this.value)">
+                `;
+                container.appendChild(rateDiv);
+            });
+        }
+
+        function updateVendorRate(vendorId, newRate) {
+            milkData.vendors[vendorId].rate = parseFloat(newRate) || 60;
+            saveData();
+            calculateAmountForVendor(vendorId);
+        }
+
+        function renderVendorSections() {
+            const container = document.getElementById('vendorSectionsContainer');
+            container.innerHTML = '';
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                const today = new Date().toISOString().split('T')[0];
+                
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'vendor-section';
+                sectionDiv.innerHTML = `
+                    <div class="vendor-header">
+                        <span class="vendor-name">🐄 ${vendor.name}</span>
+                        <span class="vendor-total" id="${vendorId}Total">₹0</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="${vendorId}Date" value="${today}">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">KG</label>
+                            <input type="number" class="form-input" id="${vendorId}Kg" placeholder="Enter KG" step="0.5"
+                                   oninput="calculateAmountForVendor('${vendorId}')">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="text" class="form-input" id="${vendorId}Amount" readonly placeholder="Auto calculated">
+                        </div>
+                    </div>
+                    <div class="success-message" id="${vendorId}Success">✅ Record Saved Successfully!</div>
+                    <button class="btn btn-save" onclick="saveRecord('${vendorId}')">💾 SAVE RECORD</button>
+                `;
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function calculateAmountForVendor(vendorId) {
+            const kg = parseFloat(document.getElementById(`${vendorId}Kg`).value) || 0;
+            const rate = milkData.vendors[vendorId].rate;
+            const amount = kg * rate;
+            document.getElementById(`${vendorId}Amount`).value = amount > 0 ? `₹${amount.toFixed(2)}` : '';
+        }
+
+        function saveRecord(vendorId) {
+            const kg = parseFloat(document.getElementById(`${vendorId}Kg`).value);
+            const date = document.getElementById(`${vendorId}Date`).value;
+            const rate = milkData.vendors[vendorId].rate;
+            
+            if (!kg || !date || !rate) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const record = {
+                id: Date.now() + Math.random(),
+                date: new Date(date + 'T12:00:00').toISOString(),
+                kg: kg,
+                rate: rate,
+                amount: kg * rate
+            };
+
+            milkData.vendors[vendorId].records.push(record);
+            saveData();
+            
+            document.getElementById(`${vendorId}Kg`).value = '';
+            document.getElementById(`${vendorId}Amount`).value = '';
+            
+            const successMsg = document.getElementById(`${vendorId}Success`);
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+            
+            updateDisplay();
+            renderRecords();
+        }
+
+        function renderRecords() {
+            const container = document.getElementById('recordsContainer');
+            const pdfContainer = document.getElementById('pdfOptionsContainer');
+            container.innerHTML = '';
+            pdfContainer.innerHTML = '';
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                
+                const recordDiv = document.createElement('div');
+                recordDiv.className = 'card';
+                recordDiv.innerHTML = `
+                    <h3>🐄 ${vendor.name} Records</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="filter-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>KG</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="${vendorId}TableBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div style="font-size: 20px; font-weight: 800;" id="${vendorId}TotalKg">0 KG</div>
+                                <div style="font-size: 13px; opacity: 0.9;">Total KG</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 20px; font-weight: 800;" id="${vendorId}TotalAmount">₹0</div>
+                                <div style="font-size: 13px; opacity: 0.9;">Total Amount</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(recordDiv);
+                
+                const tableBody = document.getElementById(`${vendorId}TableBody`);
+                if (vendor.records.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="no-results">No records found</td></tr>';
+                } else {
+                    vendor.records.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(record => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${new Date(record.date).toLocaleDateString('en-GB')}</td>
+                            <td>${record.kg}KG</td>
+                            <td>₹${record.rate}</td>
+                            <td>₹${record.amount.toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-danger btn-small" onclick="deleteRecord('${vendorId}', '${record.id}')">🗑️</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+                
+                const totalKg = vendor.records.reduce((sum, record) => sum + record.kg, 0);
+                const totalAmount = vendor.records.reduce((sum, record) => sum + record.amount, 0);
+                
+                document.getElementById(`${vendorId}TotalKg`).textContent = `${totalKg.toFixed(1)} KG`;
+                document.getElementById(`${vendorId}TotalAmount`).textContent = `₹${totalAmount.toFixed(2)}`;
+                
+                const pdfBtn = document.createElement('button');
+                pdfBtn.className = 'btn btn-primary';
+                pdfBtn.innerHTML = `📄 ${vendor.name} PDF`;
+                pdfBtn.onclick = () => generateVendorPDF(vendorId);
+                pdfContainer.appendChild(pdfBtn);
+            });
+        }
+
+        function renderVendorFilters() {
+            const container = document.getElementById('vendorFiltersContainer');
+            container.innerHTML = '';
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                const today = new Date().toISOString().split('T')[0];
+                
+                const filterDiv = document.createElement('div');
+                filterDiv.className = 'card';
+                filterDiv.innerHTML = `
+                    <h3>🔍 ${vendor.name} Date Filter</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-input" id="${vendorId}FilterFrom" value="${today}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-input" id="${vendorId}FilterTo" value="${today}">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="applyVendorFilter('${vendorId}')" style="width: 100%; margin-top: 15px;">
+                        📊 Filter ${vendor.name}
+                    </button>
+                `;
+                container.appendChild(filterDiv);
+            });
+        }
+
+        function applyVendorFilter(vendorId) {
+            const fromDate = new Date(document.getElementById(`${vendorId}FilterFrom`).value);
+            const toDate = new Date(document.getElementById(`${vendorId}FilterTo`).value);
+            const vendor = milkData.vendors[vendorId];
+            
+            if (!fromDate || !toDate) {
+                alert('Please select both dates');
+                return;
+            }
+            
+            const filteredRecords = vendor.records.filter(record => {
+                const recordDate = new Date(record.date);
+                return recordDate >= fromDate && recordDate <= toDate;
+            });
+            
+            displayFilterResults(filteredRecords.map(record => ({
+                ...record,
+                vendorName: vendor.name
+            })), `${vendor.name} (${fromDate.toLocaleDateString('en-GB')} to ${toDate.toLocaleDateString('en-GB')})`);
+        }
+
+        function applyCombinedDateFilter() {
+            const fromDate = new Date(document.getElementById('combinedFilterFromDate').value);
+            const toDate = new Date(document.getElementById('combinedFilterToDate').value);
+            
+            if (!fromDate || !toDate) {
+                alert('Please select both dates');
+                return;
+            }
+            
+            const allRecords = [];
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                vendor.records.forEach(record => {
+                    const recordDate = new Date(record.date);
+                    if (recordDate >= fromDate && recordDate <= toDate) {
+                        allRecords.push({
+                            ...record,
+                            vendorName: vendor.name
+                        });
+                    }
+                });
+            });
+            
+            displayFilterResults(allRecords, `Combined (${fromDate.toLocaleDateString('en-GB')} to ${toDate.toLocaleDateString('en-GB')})`);
+        }
+
+        function displayFilterResults(data, title = 'Filter Results') {
+            const resultsContainer = document.getElementById('filterResults');
+            
+            if (!data || data.length === 0) {
+                resultsContainer.innerHTML = '<p class="no-results">No records found for selected dates</p>';
+                return;
+            }
+
+            let totalAmount = 0;
+            let totalKg = 0;
+
+            let html = `
+                <h4 class="filter-title">${title}</h4>
+                <div style="overflow-x: auto;">
+                    <table class="filter-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vendor</th>
+                                <th>KG</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            data.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(record => {
+                totalAmount += record.amount;
+                totalKg += record.kg;
+                
+                html += `
+                    <tr>
+                        <td>${new Date(record.date).toLocaleDateString('en-GB')}</td>
+                        <td>${record.vendorName}</td>
+                        <td>${record.kg}KG</td>
+                        <td>₹${record.rate}</td>
+                        <td>₹${record.amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="filter-summary">
+                    <strong>Filter Summary: ${totalKg.toFixed(1)}KG = ₹${totalAmount.toFixed(2)}</strong>
+                </div>
+            `;
+
+            resultsContainer.innerHTML = html;
+        }
+
+        function clearFilter() {
+            document.getElementById('filterResults').innerHTML = '<p class="no-results">Apply filters to see results</p>';
+        }
+
+        function updateDisplay() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            let monthlyTotal = 0;
+            let totalKg = 0;
+            let totalRecords = 0;
+
+            const breakdownContainer = document.getElementById('vendorBreakdownContainer');
+            breakdownContainer.innerHTML = '';
+
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                const monthData = vendor.records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+                });
+
+                const vendorKg = monthData.reduce((sum, record) => sum + record.kg, 0);
+                const vendorAmount = monthData.reduce((sum, record) => sum + record.amount, 0);
+
+                monthlyTotal += vendorAmount;
+                totalKg += vendorKg;
+                totalRecords += monthData.length;
+
+                const totalElement = document.getElementById(`${vendorId}Total`);
+                if (totalElement) {
+                    totalElement.textContent = `₹${vendorAmount.toFixed(2)}`;
+                }
+
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = 'breakdown-item';
+                breakdownItem.innerHTML = `
+                    <span>${vendor.name}:</span>
+                    <span>${vendorKg.toFixed(1)} KG - ₹${vendorAmount.toFixed(2)}</span>
+                `;
+                breakdownContainer.appendChild(breakdownItem);
+            });
+
+            const avgRate = totalKg > 0 ? monthlyTotal / totalKg : 0;
+
+            document.getElementById('monthlyTotal').textContent = `₹${monthlyTotal.toFixed(2)}`;
+            document.getElementById('totalKg').textContent = totalKg.toFixed(1);
+            document.getElementById('totalRecords').textContent = totalRecords;
+            document.getElementById('avgRate').textContent = `₹${avgRate.toFixed(2)}`;
+        }
+
+        function generateVendorPDF(vendorId) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const vendor = milkData.vendors[vendorId];
+            
+            doc.setFontSize(20);
+            doc.text(`${vendor.name} - Milk Records`, 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text('Created by Bhavesh Verma', 105, 30, { align: 'center' });
+            
+            let yPosition = 50;
+            
+            if (vendor.records.length > 0) {
+                doc.setFontSize(9);
+                doc.text('Date', 20, yPosition);
+                doc.text('KG', 60, yPosition);
+                doc.text('Rate/KG', 90, yPosition);
+                doc.text('Amount', 140, yPosition);
+                yPosition += 10;
+                
+                let totalKg = 0;
+                let totalAmount = 0;
+                
+                vendor.records.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(record => {
+                    const date = new Date(record.date).toLocaleDateString('en-GB');
+                    doc.text(date, 20, yPosition);
+                    doc.text(record.kg.toString(), 60, yPosition);
+                    doc.text(`₹${record.rate}`, 90, yPosition);
+                    doc.text(`₹${record.amount.toFixed(2)}`, 140, yPosition);
+                    
+                    totalKg += record.kg;
+                    totalAmount += record.amount;
+                    yPosition += 6;
+                    
+                    if (yPosition > 270) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                });
+                
+                doc.setFontSize(12);
+                doc.text(`Total: ${totalKg.toFixed(1)}KG = ₹${totalAmount.toFixed(2)}`, 105, yPosition + 10, { align: 'center' });
+            }
+            
+            doc.save(`${vendor.name}_Report.pdf`);
+        }
+
+        function generateMonthlyReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const currentDate = new Date();
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            doc.setFontSize(18);
+            doc.text('Milk Tracker AI - Combined Report', 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text(`${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`, 105, 30, { align: 'center' });
+            doc.setFontSize(9);
+            doc.text('Created by Bhavesh Verma', 105, 40, { align: 'center' });
+            
+            let yPosition = 60;
+            
+            Object.keys(milkData.vendors).forEach(vendorId => {
+                const vendor = milkData.vendors[vendorId];
+                
+                const monthData = vendor.records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate.getMonth() === currentDate.getMonth() && 
+                           recordDate.getFullYear() === currentDate.getFullYear();
+                });
+
+                if (monthData.length > 0) {
+                    doc.setFontSize(13);
+                    doc.text(vendor.name, 20, yPosition);
+                    yPosition += 10;
+                    
+                    doc.setFontSize(8);
+                    doc.text('Date', 20, yPosition);
+                    doc.text('KG', 60, yPosition);
+                    doc.text('Rate/KG', 90, yPosition);
+                    doc.text('Amount', 140, yPosition);
+                    yPosition += 5;
+                    
+                    let vendorTotal = 0;
+                    let vendorKg = 0;
+                    
+                    monthData.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(record => {
+                        const date = new Date(record.date).toLocaleDateString('en-GB');
+                        doc.text(date, 20, yPosition);
+                        doc.text(record.kg.toString(), 60, yPosition);
+                        doc.text(`₹${record.rate}`, 90, yPosition);
+                        doc.text(`₹${record.amount.toFixed(2)}`, 140, yPosition);
+                        
+                        vendorTotal += record.amount;
+                        vendorKg += record.kg;
+                        yPosition += 4;
+                        
+                        if (yPosition > 270) {
+                            doc.addPage();
+                            yPosition = 20;
+                        }
+                    });
+                    
+                    doc.setFontSize(10);
+                    doc.text(`${vendor.name} Total: ${vendorKg.toFixed(1)}KG = ₹${vendorTotal.toFixed(2)}`, 20, yPosition + 5);
+                    yPosition += 20;
+                }
+            });
+            
+            const grandTotal = Object.keys(milkData.vendors).reduce((total, vendorId) => {
+                const vendor = milkData.vendors[vendorId];
+                const monthData = vendor.records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate.getMonth() === currentDate.getMonth() && 
+                           recordDate.getFullYear() === currentDate.getFullYear();
+                });
+                return total + monthData.reduce((sum, record) => sum + record.amount, 0);
+            }, 0);
+            
+            doc.setFontSize(14);
+            doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 105, yPosition + 10, { align: 'center' });
+            
+            doc.save(`AI_Monthly_Report_${monthNames[currentDate.getMonth()]}_${currentDate.getFullYear()}.pdf`);
+        }
+
+        function deleteRecord(vendorId, recordId) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                const vendor = milkData.vendors[vendorId];
+                const index = vendor.records.findIndex(r => r.id == recordId);
+                if (index !== -1) {
+                    vendor.records.splice(index, 1);
+                    saveData();
+                    updateDisplay();
+                    renderRecords();
+                }
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data?')) {
+                Object.keys(milkData.vendors).forEach(vendorId => {
+                    milkData.vendors[vendorId].records = [];
+                });
+                saveData();
+                updateDisplay();
+                renderRecords();
+            }
+        }
+
+        function clearMonthData() {
+            if (confirm('Are you sure you want to clear this month data?')) {
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                
+                Object.keys(milkData.vendors).forEach(vendorId => {
+                    milkData.vendors[vendorId].records = milkData.vendors[vendorId].records.filter(record => {
+                        const recordDate = new Date(record.date);
+                        return !(recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear);
+                    });
+                });
+                
+                saveData();
+                updateDisplay();
+                renderRecords();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('milkTrackerAI', JSON.stringify(milkData));
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('vendorModal');
+            if (event.target === modal) {
+                closeVendorModal();
+            }
+        }
+    </script>
+</body>
+</html>
